@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator odnawiania staminy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <h1>Kalkulator odnawiania staminy</h1>
+        
+        <label for="staminaHours">Aktualny poziom staminy (godziny):</label>
+        <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0">
+
+        <label for="staminaMinutes">Aktualny poziom staminy (minuty):</label>
+        <input type="number" id="staminaMinutes" placeholder="Wpisz ilość minut" min="0" max="59">
+
+        <label for="restPlace">Miejsce odpoczynku:</label>
+        <select id="restPlace">
+            <option value="domek">Stanie w PZ/Trainery</option>
+            <option value="offline">Offline</option>
+        </select>
+
+        <button onclick="calculateStamina()">Licz</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateStamina() {
+            const staminaHours = parseInt(document.getElementById("staminaHours").value);
+            const staminaMinutes = parseInt(document.getElementById("staminaMinutes").value);
+            const restPlace = document.getElementById("restPlace").value;
+
+            if (isNaN(staminaHours) || isNaN(staminaMinutes) || staminaMinutes < 0 || staminaMinutes >= 60) {
+                alert("Wprowadź poprawne wartości dla godzin i minut.");
+                return;
+            }
+
+            let currentStaminaMinutes = staminaHours * 60 + staminaMinutes;
+            let totalMinutesToRecover = 0;
+
+            let regenFactor1, regenFactor2;
+            if (restPlace === "domek") {
+                regenFactor1 = 2;
+                regenFactor2 = 6;
+            } else {
+                regenFactor1 = 3;
+                regenFactor2 = 6;
+            }
+
+            const maxStaminaMinutes = 42 * 60;
+            const thresholdStaminaMinutes = 39 * 60;
+
+            if (currentStaminaMinutes < thresholdStaminaMinutes) {
+                const minutesTo39 = thresholdStaminaMinutes - currentStaminaMinutes;
+                totalMinutesToRecover += minutesTo39 * regenFactor1;
+                currentStaminaMinutes = thresholdStaminaMinutes;
+            }
+
+            if (currentStaminaMinutes < maxStaminaMinutes) {
+                const minutesTo42 = maxStaminaMinutes - currentStaminaMinutes;
+                totalMinutesToRecover += minutesTo42 * regenFactor2;
+            }
+
+            const hoursToRecover = Math.floor(totalMinutesToRecover / 60);
+            const minutesToRecover = totalMinutesToRecover % 60;
+
+            document.getElementById("result").textContent = `Czas regeneracji: ${hoursToRecover} godz. ${minutesToRecover} min.`;
+        }
+    </script>
+
+</body>
+</html>
