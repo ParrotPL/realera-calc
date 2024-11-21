@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator odnawiania staminy</title>
+    <title>Kalkulatory</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,31 +16,66 @@
             align-items: center;
             height: 100vh;
         }
-        .calculator {
+
+        .tabs {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
         }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons button {
+            flex: 1;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .tab-buttons button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         h1 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
         }
-        input, select {
+
+        input,
+        select {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        button {
+
+        button.calculate {
             width: 100%;
             padding: 10px;
             background-color: #4CAF50;
@@ -49,40 +85,85 @@
             font-size: 16px;
             cursor: pointer;
         }
-        button:hover {
+
+        button.calculate:hover {
             background-color: #45a049;
         }
+
         .result {
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
         }
+
+        .info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+
 <body>
+    <div class="tabs">
+        <div class="tab-buttons">
+            <button class="active" onclick="showTab('staminaTab')">Odnawianie staminy</button>
+            <button onclick="showTab('trainingTab')">Kalkulator treningu melee</button>
+        </div>
 
-    <div class="calculator">
-        <h1>Kalkulator odnawiania staminy</h1>
-        
-        <label for="staminaHours">Aktualny poziom staminy (godziny):</label>
-        <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0">
+        <div id="staminaTab" class="tab-content active">
+            <h1>Kalkulator odnawiania staminy</h1>
 
-        <label for="staminaMinutes">Aktualny poziom staminy (minuty):</label>
-        <input type="number" id="staminaMinutes" placeholder="Wpisz ilość minut" min="0" max="59">
+            <label for="staminaHours">Aktualny poziom staminy (godziny):</label>
+            <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0">
 
-        <label for="restPlace">Miejsce odpoczynku:</label>
-        <select id="restPlace">
-            <option value="domek">Stanie w PZ/Trainery</option>
-            <option value="offline">Offline</option>
-        </select>
+            <label for="staminaMinutes">Aktualny poziom staminy (minuty):</label>
+            <input type="number" id="staminaMinutes" placeholder="Wpisz ilość minut" min="0" max="59">
 
-        <button onclick="calculateStamina()">Licz</button>
+            <label for="restPlace">Miejsce odpoczynku:</label>
+            <select id="restPlace">
+                <option value="domek">Stanie w PZ/Trainery</option>
+                <option value="offline">Offline</option>
+            </select>
 
-        <div class="result" id="result"></div>
+            <button class="calculate" onclick="calculateStamina()">Licz</button>
+
+            <div class="result" id="result"></div>
+        </div>
+
+        <div id="trainingTab" class="tab-content">
+            <h1>Kalkulator treningu</h1>
+
+            <p class="info">Kalkulator dotyczy wyłącznie skillowania melee dla Rookstayerów.</p>
+
+            <label for="currentSkill">Aktualny poziom skilla (min. 10):</label>
+            <input type="number" id="currentSkill" placeholder="Wpisz aktualny poziom" min="10" value="10">
+
+            <label for="percentToNext">Ile % do następnego poziomu:</label>
+            <input type="number" id="percentToNext" placeholder="Wpisz procent" min="1" max="100" value="100">
+
+            <label for="targetSkill">Poziom skilla do osiągnięcia:</label>
+            <input type="number" id="targetSkill" placeholder="Wpisz docelowy poziom" min="11" value="11">
+
+            <button class="calculate" onclick="calculateTraining()">Licz</button>
+
+            <div class="result" id="trainingResult"></div>
+        </div>
     </div>
 
     <script>
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-buttons button');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
         function calculateStamina() {
             const staminaHours = parseInt(document.getElementById("staminaHours").value);
             const staminaMinutes = parseInt(document.getElementById("staminaMinutes").value);
@@ -124,7 +205,51 @@
 
             document.getElementById("result").textContent = `Czas regeneracji: ${hoursToRecover} godz. ${minutesToRecover} min.`;
         }
-    </script>
 
+        function calculateTraining() {
+            const currentSkill = parseInt(document.getElementById("currentSkill").value);
+            var percentToNext = parseInt(document.getElementById("percentToNext").value);
+            const targetSkill = parseInt(document.getElementById("targetSkill").value);
+
+            if (
+                isNaN(currentSkill) || isNaN(percentToNext) || isNaN(targetSkill) ||
+                currentSkill < 10 || percentToNext < 0 || percentToNext > 100 || targetSkill <= currentSkill
+            ) {
+                alert("Wprowadź poprawne wartości (aktualny poziom skilla nie może być mniejszy niż 10).");
+                return;
+            }
+
+            let totalHits = 0;
+
+            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
+            for (let level = currentSkill + 1; level <= targetSkill; level++) {
+                const hitsForLevel = Math.floor(25 * Math.pow(1.9, level - 11));  // Obliczanie uderzeń dla danego poziomu
+                if (percentToNext < 100) {
+                    totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
+                    percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
+                } else {
+                    totalHits += hitsForLevel;  // Dodanie do całkowitej liczby uderzeń
+                }
+            }
+
+            // Czas na wykonanie wszystkich uderzeń (2 sekundy na jedno uderzenie)
+            const totalSeconds = totalHits * 2;
+            const hours = Math.floor(totalSeconds / 3600);  // Przeliczenie na godziny
+            const minutes = Math.floor((totalSeconds % 3600) / 60);  // Przeliczenie na minuty
+            const seconds = totalSeconds % 60;  // Reszta sekund
+
+            // Wyświetlanie wyniku z czasem
+            const resultDiv = document.getElementById("trainingResult");
+            resultDiv.innerHTML = `
+        <div>Potrzebne uderzenia: ${totalHits}.</div>
+        <div style="color: red;">Czas: ${hours} godz. ${minutes} minut ${seconds} sekund.</div>
+    `;
+        }
+
+
+
+
+    </script>
 </body>
+
 </html>
