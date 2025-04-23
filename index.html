@@ -187,11 +187,11 @@
             }
 
             const maxStaminaMinutes = 42 * 60;
-            const thresholdStaminaMinutes = 39 * 60;
+            const thresholdStaminaMinutes = 40 * 60; // only 2 hours for bonus stamina
 
             if (currentStaminaMinutes < thresholdStaminaMinutes) {
-                const minutesTo39 = thresholdStaminaMinutes - currentStaminaMinutes;
-                totalMinutesToRecover += minutesTo39 * regenFactor1;
+                const minutesTo40 = thresholdStaminaMinutes - currentStaminaMinutes;
+                totalMinutesToRecover += minutesTo40 * regenFactor1;
                 currentStaminaMinutes = thresholdStaminaMinutes;
             }
 
