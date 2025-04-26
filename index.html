@@ -148,7 +148,13 @@
             <label for="targetSkill">Poziom skilla do osiągnięcia:</label>
             <input type="number" id="targetSkill" placeholder="Wpisz docelowy poziom" min="11" value="11">
 
-            <button class="calculate" onclick="calculateTraining()">Licz</button>
+            <label for="vocation">Profesja:</label>
+            <select id="vocation">
+                <option value="none">Bez promocji (no-vocation)</option>
+                <option value="rookstayer">Z promocją (rookstayer)</option>
+            </select>
+
+            <button class="calculate" onclick="calculateTraining()">Licz</button>            
 
             <div class="result" id="trainingResult"></div>
         </div>
@@ -222,10 +228,18 @@
             }
 
             let totalHits = 0;
+            let hitsForLevel;
+            let skillrate = 0;
+            const vocation = document.getElementById('vocation').value;
+            if (vocation === "none") {
+                skillrate = 1.9;  // Wartość dla none
+            } else {
+                skillrate = 1.6;  // Wartość dla rookstayer
+            }
 
-            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
-            for (let level = currentSkill + 1; level <= targetSkill; level++) {
-                const hitsForLevel = Math.floor(25 * Math.pow(1.9, level - 11));  // Obliczanie uderzeń dla danego poziomu
+           // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
+           for (let level = currentSkill + 1; level <= targetSkill; level++) {
+                const hitsForLevel = Math.floor(25 * Math.pow(skillrate, level - 11));  // Obliczanie uderzeń dla danego poziomu
                 if (percentToNext < 100) {
                     totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
                     percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
