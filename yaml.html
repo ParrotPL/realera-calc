@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML do YAML Konwerter</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 200px; margin-bottom: 20px; }
+    pre { background: #f4f4f4; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Konwerter HTML → YAML (pozycje mapy)</h1>
+  <p>Wklej HTML z linkami poniżej:</p>
+  <textarea id="inputHtml" placeholder="Wklej HTML..."></textarea>
+  <button onclick="convert()">Konwertuj</button>
+  <h2>Wynik YAML:</h2>
+  <pre id="outputYaml"></pre>
+
+  <script>
+    function convert() {
+      const html = document.getElementById('inputHtml').value;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const links = doc.querySelectorAll('a[href*="position"]');
+
+      let yaml = '';
+      let index = 600;
+
+      links.forEach(link => {
+        const href = link.getAttribute('href');
+        const match = href.match(/position,(\d+),(\d+),(\d+)/);
+
+        if (match) {
+          const [_, x, y, z] = match;
+          yaml += `${index}:\n`;
+          yaml += `  icon: 1\n`;
+          yaml += `  position:\n`;
+          yaml += `    y: ${y}\n`;
+          yaml += `    x: ${x}\n`;
+          yaml += `    z: ${z}\n`;
+          yaml += `  description: ${link.textContent.trim()}\n`;
+          index++;
+        }
+      });
+
+      document.getElementById('outputYaml').textContent = yaml;
+    }
+  </script>
+</body>
+</html>
