@@ -109,19 +109,22 @@
     <div class="tabs">
         <div class="tab-buttons">
             <button class="active" onclick="showTab('staminaTab')">Odnawianie staminy</button>
-            <button onclick="showTab('trainingTab')">Kalkulator treningu melee</button>
+            <button onclick="showTab('trainingMeleeTab')">Kalkulator treningu melee</button>
+            <button onclick="showTab('trainingDistTab')">Kalkulator treningu dist</button>
+            <button onclick="showTab('trainingMagicTab')">Kalkulator treningu magic</button>
         </div>
 
         <div id="staminaTab" class="tab-content active">
             <h1>Kalkulator odnawiania staminy</h1>
 
-            <p class="info"><strong>Uwaga:</strong> od edycji 2025 – Xenoria bonus stamina to <strong>2 godziny</strong>, a nie 3 jak poprzednio.</p>
-            
+            <p class="info"><strong>Uwaga:</strong> od edycji 2025 – Xenoria bonus stamina to <strong>2
+                    godziny</strong>, a nie 3 jak poprzednio.</p>
+
             <label for="staminaHours">Aktualny poziom staminy (godziny):</label>
-            <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0">
+            <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0" value="40">
 
             <label for="staminaMinutes">Aktualny poziom staminy (minuty):</label>
-            <input type="number" id="staminaMinutes" placeholder="Wpisz ilość minut" min="0" max="59">
+            <input type="number" id="staminaMinutes" placeholder="Wpisz ilość minut" min="0" max="59" value="00">
 
             <label for="restPlace">Miejsce odpoczynku:</label>
             <select id="restPlace">
@@ -134,29 +137,73 @@
             <div class="result" id="result"></div>
         </div>
 
-        <div id="trainingTab" class="tab-content">
-            <h1>Kalkulator treningu</h1>
+        <div id="trainingMeleeTab" class="tab-content">
+            <h1>Kalkulator treningu melee</h1>
 
-            <p class="info">Kalkulator dotyczy wyłącznie skillowania melee dla Rookstayerów.</p>
+            <label for="currentSkillMelee">Aktualny poziom skilla (min. 10):</label>
+            <input type="number" id="currentSkillMelee" placeholder="Wpisz aktualny poziom" min="10" value="10">
 
-            <label for="currentSkill">Aktualny poziom skilla (min. 10):</label>
-            <input type="number" id="currentSkill" placeholder="Wpisz aktualny poziom" min="10" value="10">
+            <label for="percentToNextMelee">Ile % do następnego poziomu:</label>
+            <input type="number" id="percentToNextMelee" placeholder="Wpisz procent" min="1" max="100" value="100">
 
-            <label for="percentToNext">Ile % do następnego poziomu:</label>
-            <input type="number" id="percentToNext" placeholder="Wpisz procent" min="1" max="100" value="100">
+            <label for="targetSkillMelee">Poziom skilla do osiągnięcia:</label>
+            <input type="number" id="targetSkillMelee" placeholder="Wpisz docelowy poziom" min="11" value="11">
 
-            <label for="targetSkill">Poziom skilla do osiągnięcia:</label>
-            <input type="number" id="targetSkill" placeholder="Wpisz docelowy poziom" min="11" value="11">
-
-            <label for="vocation">Profesja:</label>
-            <select id="vocation">
+            <label for="vocationMelee">Profesja:</label>
+            <select id="vocationMelee">
                 <option value="none">Bez promocji (no-vocation)</option>
                 <option value="rookstayer">Z promocją (rookstayer)</option>
             </select>
 
-            <button class="calculate" onclick="calculateTraining()">Licz</button>            
+            <button class="calculate" onclick="calculateTrainingMelee()">Licz</button>
 
-            <div class="result" id="trainingResult"></div>
+            <div class="result" id="trainingResultMelee"></div>
+        </div>
+
+        <div id="trainingMagicTab" class="tab-content">
+            <h1>Kalkulator treningu melee</h1>
+
+            <label for="currentSkillMagic">Aktualny poziom skilla (min. 10):</label>
+            <input type="number" id="currentSkillMagic" placeholder="Wpisz aktualny poziom" min="0" value="0">
+
+            <label for="percentToNextMagic">Ile % do następnego poziomu:</label>
+            <input type="number" id="percentToNextMagic" placeholder="Wpisz procent" min="1" max="100" value="100">
+
+            <label for="targetSkillMagic">Poziom skilla do osiągnięcia:</label>
+            <input type="number" id="targetSkillMagic" placeholder="Wpisz docelowy poziom" min="1" value="1">
+
+            <label for="vocationMagic">Profesja:</label>
+            <select id="vocationMagic">
+                <option value="none">Bez promocji (no-vocation)</option>
+                <option value="rookstayer">Z promocją (rookstayer)</option>
+            </select>
+
+            <button class="calculate" onclick="calculateTrainingMagic()">Licz</button>
+
+            <div class="result" id="trainingResultMagic"></div>
+        </div>
+
+        <div id="trainingDistTab" class="tab-content">
+            <h1>Kalkulator treningu distance</h1>
+
+            <label for="currentSkillDist">Aktualny poziom skilla (min. 10):</label>
+            <input type="number" id="currentSkillDist" placeholder="Wpisz aktualny poziom" min="10" value="10">
+
+            <label for="percentToNextDist">Ile % do następnego poziomu:</label>
+            <input type="number" id="percentToNextDist" placeholder="Wpisz procent" min="1" max="100" value="100">
+
+            <label for="targetSkillDist">Poziom skilla do osiągnięcia:</label>
+            <input type="number" id="targetSkillDist" placeholder="Wpisz docelowy poziom" min="11" value="11">
+
+            <label for="vocationDist">Profesja:</label>
+            <select id="vocationDist">
+                <option value="none">Bez promocji (no-vocation)</option>
+                <option value="rookstayer">Z promocją (rookstayer)</option>
+            </select>
+
+            <button class="calculate" onclick="calculateTrainingDist()">Licz</button>
+
+            <div class="result" id="trainingResultDist"></div>
         </div>
     </div>
 
@@ -214,10 +261,10 @@
             document.getElementById("result").textContent = `Czas regeneracji: ${hoursToRecover} godz. ${minutesToRecover} min.`;
         }
 
-        function calculateTraining() {
-            const currentSkill = parseInt(document.getElementById("currentSkill").value);
-            var percentToNext = parseInt(document.getElementById("percentToNext").value);
-            const targetSkill = parseInt(document.getElementById("targetSkill").value);
+        function calculateTrainingMelee() {
+            const currentSkill = parseInt(document.getElementById("currentSkillMelee").value);
+            var percentToNext = parseInt(document.getElementById("percentToNextMelee").value);
+            const targetSkill = parseInt(document.getElementById("targetSkillMelee").value);
 
             if (
                 isNaN(currentSkill) || isNaN(percentToNext) || isNaN(targetSkill) ||
@@ -229,17 +276,19 @@
 
             let totalHits = 0;
             let hitsForLevel;
-            let skillrate = 0;
-            const vocation = document.getElementById('vocation').value;
+            let voc_constant = 0;
+            const vocation = document.getElementById('vocationMelee').value;
             if (vocation === "none") {
-                skillrate = 1.9;  // Wartość dla none
+                voc_constant = 1.9;  // Wartość dla none
             } else {
-                skillrate = 1.6;  // Wartość dla rookstayer
+                voc_constant = 1.6;  // Wartość dla rookstayer
             }
 
-           // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
-           for (let level = currentSkill + 1; level <= targetSkill; level++) {
-                const hitsForLevel = Math.floor(25 * Math.pow(skillrate, level - 11));  // Obliczanie uderzeń dla danego poziomu
+            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
+            for (let level = currentSkill + 1; level <= targetSkill; level++) {
+                //Points required to advance to next skill level:
+                const hitsForLevel = Math.floor(25 * Math.pow(voc_constant, level - 11));  // Obliczanie uderzeń dla danego poziomu
+                // 25 to 50 przy rate x 1-- skill contstant
                 if (percentToNext < 100) {
                     totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
                     percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
@@ -249,20 +298,138 @@
             }
 
             // Czas na wykonanie wszystkich uderzeń (2 sekundy na jedno uderzenie)
+            
+            totalHits = Math.ceil(totalHits);  // Zaokrąglenie do pełnej liczby uderzeń
             const totalSeconds = totalHits * 2;
-            const hours = Math.floor(totalSeconds / 3600);  // Przeliczenie na godziny
-            const minutes = Math.floor((totalSeconds % 3600) / 60);  // Przeliczenie na minuty
-            const seconds = totalSeconds % 60;  // Reszta sekund
+
+            // Przeliczenie na dni, godziny, minuty i sekundy
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);  // Zaokrąglenie do pełnej sekundy
 
             // Wyświetlanie wyniku z czasem
-            const resultDiv = document.getElementById("trainingResult");
+            const resultDiv = document.getElementById("trainingResultMelee");
             resultDiv.innerHTML = `
-        <div>Potrzebne uderzenia: ${totalHits}.</div>
-        <div style="color: red;">Czas: ${hours} godz. ${minutes} minut ${seconds} sekund.</div>
-    `;
+                <div>Potrzebne uderzenia: ${totalHits}.</div>
+                <div style="color: red;">Czas: ${days} dni ${hours} godz. ${minutes} minut ${seconds} sekund.</div>`;
         }
 
 
+        function calculateTrainingMagic() {
+            const currentSkill = parseInt(document.getElementById("currentSkillMagic").value);
+            var percentToNext = parseInt(document.getElementById("percentToNextMagic").value);
+            const targetSkill = parseInt(document.getElementById("targetSkillMagic").value);
+
+            if (
+                isNaN(currentSkill) || isNaN(percentToNext) || isNaN(targetSkill) ||
+                currentSkill < 0 || percentToNext < 0 || percentToNext > 100 || targetSkill <= currentSkill
+            ) {
+                alert("Wprowadź poprawne wartości.");
+                return;
+            }
+
+            let totalMana = 0;
+            let manaForLevel;
+            let voc_constant = 0;
+            const vocation = document.getElementById('vocationMagic').value;
+
+            if (vocation === "none") {
+                voc_constant = 4.0;  // Wartość dla "none"
+            } else {
+                voc_constant = 2.7;  // Wartość dla rookstayer
+            }
+
+            // Obliczanie many potrzebnej do osiągnięcia docelowego poziomu
+            for (let level = currentSkill + 1; level <= targetSkill; level++) {
+                // Mana required to advance to next magic level
+                manaForLevel = Math.floor(1600 * Math.pow(voc_constant, level - 1));
+
+                if (percentToNext < 100) {
+                    totalMana += (manaForLevel / 100) * percentToNext;
+                    percentToNext = 100;
+                } else {
+                    totalMana += manaForLevel;
+                }
+            }
+
+            // Wyświetlanie wyniku
+            const visibleMana = Math.ceil(totalMana / 1.5);
+
+            const spell1Cost = 40; // Exura gran
+            const spell2Cost = 70; // Utani hur
+
+            const exuraGranCasts = Math.ceil(visibleMana / spell1Cost);
+            const utaniHurCasts = Math.ceil(visibleMana / spell2Cost);
+
+            const resultDiv = document.getElementById("trainingResultMagic");
+            resultDiv.innerHTML = `
+            <div>Potrzebna mana: ${visibleMana}.</div>
+            <div style="color: red;">Używaj tylko czaru wymagającego many podzielnej przez 2!</div><br>
+            <div style="color: blue;">Exura dis (5mp) oraz Exevo pan min (75mp) są mniej wydajne podczas trenowania mlvl ze względu na zaokrąglenia w dół.</div><br>
+            <div>🔹 Przykładowe zużycie many:</div>
+            <ul>
+                <li>Exura gran (40mp): <strong>${exuraGranCasts}</strong> razy</li>
+                <li>Utani hur (70mp): <strong>${utaniHurCasts}</strong> razy</li>
+            </ul>`;
+        }
+
+
+        function calculateTrainingDist() {
+            const currentSkill = parseInt(document.getElementById("currentSkillDist").value);
+            var percentToNext = parseInt(document.getElementById("percentToNextDist").value);
+            const targetSkill = parseInt(document.getElementById("targetSkillDist").value);
+
+            if (
+                isNaN(currentSkill) || isNaN(percentToNext) || isNaN(targetSkill) ||
+                currentSkill < 10 || percentToNext < 0 || percentToNext > 100 || targetSkill <= currentSkill
+            ) {
+                alert("Wprowadź poprawne wartości.");
+                return;
+            }
+
+            let totalHits = 0;
+            let hitsForLevel;
+            let voc_constant = 0;
+            const vocation = document.getElementById('vocationDist').value;
+            if (vocation === "none") {
+                voc_constant = 1.9;  // Wartość dla none
+            } else {
+                voc_constant = 1.6;  // Wartość dla rookstayer
+            }
+
+            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
+            for (let level = currentSkill + 1; level <= targetSkill; level++) {
+                //Points required to advance to next skill level:
+                const hitsForLevel = 7.5 * Math.pow(voc_constant, level - 11);  // Obliczanie uderzeń dla danego poziomu
+                // 15 to 30 przy rate x 1-- skill contstant
+                if (percentToNext < 100) {
+                    totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
+                    percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
+                } else {
+                    totalHits += hitsForLevel;  // Dodanie do całkowitej liczby uderzeń
+                }
+            }
+
+            totalHits = Math.ceil(totalHits);  // Zaokrąglenie do pełnej liczby uderzeń
+            // Czas na wykonanie wszystkich uderzeń (2 sekundy na jedno uderzenie)
+            const totalSeconds = totalHits * 2;
+
+            // Przeliczenie na dni, godziny, minuty i sekundy
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);  // Zaokrąglone w dół do pełnej sekundy
+
+            // Wyświetlanie wyniku z czasem
+            const resultDiv = document.getElementById("trainingResultDist");
+            resultDiv.innerHTML = `
+                <div>Potrzebne uderzenia: ${totalHits}.</div>
+                <div style="color: red;">
+                    Czas: ${days} dni ${hours} godz. ${minutes} minut ${seconds} sekund.
+                </div>`;
+
+        }
 
 
     </script>
