@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>MediaWiki Multi Image Downloader</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 150px; }
+    a { display: block; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>MediaWiki Multi Image Downloader</h2>
+  <p>Wklej linki do podstron wiki (jeden link na linię):</p>
+  <textarea id="urlList"></textarea><br>
+  <button onclick="fetchAllImages()">Pobierz obrazki</button>
+
+  <div id="results"></div>
+
+  <script>
+    async function fetchAllImages() {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = 'Szukanie obrazków...';
+
+      const rawUrls = document.getElementById('urlList').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      const allImageUrls = new Set();
+
+      for (const inputUrl of rawUrls) {
+        const baseUrl = inputUrl.split('/index.php')[0];
+        const apiUrl = baseUrl + '/api.php';
+        const pageTitle = decodeURIComponent(inputUrl.split('/index.php/')[1]);
+
+        try {
+          // Krok 1: Pobierz tytuły plików z danej podstrony
+          const imageResp = await fetch(`${apiUrl}?action=query&titles=${pageTitle}&prop=images&format=json&origin=*`);
+          const imageData = await imageResp.json();
+          const pages = imageData.query?.pages;
+          const imageTitles = [];
+
+          for (const key in pages) {
+            const images = pages[key]?.images;
+            if (images) {
+              images.forEach(img => imageTitles.push(img.title));
+            }
+          }
+
+          // Krok 2: Dla każdego tytułu pliku, pobierz jego URL
+          for (const title of imageTitles) {
+            const fileResp = await fetch(`${apiUrl}?action=query&titles=${encodeURIComponent(title)}&prop=imageinfo&iiprop=url&format=json&origin=*`);
+            const fileData = await fileResp.json();
+            const filePages = fileData.query?.pages;
+
+            for (const pageId in filePages) {
+              const info = filePages[pageId].imageinfo;
+              if (info && info[0]?.url) {
+                allImageUrls.add(info[0].url);
+              }
+            }
+          }
+        } catch (e) {
+          resultsDiv.innerHTML += `<p style="color:red;">Błąd podczas przetwarzania: ${inputUrl}</p>`;
+        }
+      }
+
+      // Wyświetl wszystkie unikalne URL-e
+      if (allImageUrls.size === 0) {
+        resultsDiv.innerHTML = 'Brak obrazków.';
+      } else {
+        resultsDiv.innerHTML = `<p>Znaleziono ${allImageUrls.size} unikalnych obrazków:</p>`;
+        allImageUrls.forEach(url => {
+          const link = document.createElement('a');
+          link.href = url;
+          link.textContent = url.split('/').pop();
+          link.target = '_blank';
+          resultsDiv.appendChild(link);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
