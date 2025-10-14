@@ -117,8 +117,7 @@
         <div id="staminaTab" class="tab-content active">
             <h1>Kalkulator odnawiania staminy</h1>
 
-            <p class="info"><strong>Uwaga:</strong> od edycji 2025 – Xenoria bonus stamina to <strong>2
-                    godziny</strong>, a nie 3 jak poprzednio.</p>
+            <p class="info"><strong>Uwaga:</strong> bonus stamina to <strong>2 godziny</strong>, a nie 3 jak dawniej.</p>
 
             <label for="staminaHours">Aktualny poziom staminy (godziny):</label>
             <input type="number" id="staminaHours" placeholder="Wpisz ilość godzin" min="0" value="40">
@@ -151,8 +150,9 @@
 
             <label for="vocationMelee">Profesja:</label>
             <select id="vocationMelee">
-                <option value="none">Bez promocji (no-vocation)</option>
-                <option value="rookstayer">Z promocją (rookstayer)</option>
+                <option value="none">Bez promocji (None-vocation)</option>
+                <option value="rookstayer">Z promocją (Rookstayer)</option>
+                <option value="elite">Po Reborn (Elite Rookstayer)</option>
             </select>
 
             <button class="calculate" onclick="calculateTrainingMelee()">Licz</button>
@@ -174,8 +174,9 @@
 
             <label for="vocationMagic">Profesja:</label>
             <select id="vocationMagic">
-                <option value="none">Bez promocji (no-vocation)</option>
-                <option value="rookstayer">Z promocją (rookstayer)</option>
+                <option value="none">Bez promocji (None-vocation)</option>
+                <option value="rookstayer">Z promocją (Rookstayer)</option>
+                <option value="elite">Po Reborn (Elite Rookstayer)</option>
             </select>
 
             <button class="calculate" onclick="calculateTrainingMagic()">Licz</button>
@@ -197,8 +198,9 @@
 
             <label for="vocationDist">Profesja:</label>
             <select id="vocationDist">
-                <option value="none">Bez promocji (no-vocation)</option>
-                <option value="rookstayer">Z promocją (rookstayer)</option>
+                <option value="none">Bez promocji (None-vocation)</option>
+                <option value="rookstayer">Z promocją (Rookstayer)</option>
+                <option value="elite">Po Reborn (Elite Rookstayer)</option>
             </select>
 
             <button class="calculate" onclick="calculateTrainingDist()">Licz</button>
@@ -275,46 +277,39 @@
             }
 
             let totalHits = 0;
-            let hitsForLevel;
             let voc_constant = 0;
             const vocation = document.getElementById('vocationMelee').value;
             if (vocation === "none") {
-                voc_constant = 1.9;  // Wartość dla none
-            } else {
-                voc_constant = 1.6;  // Wartość dla rookstayer
+                voc_constant = 1.9;
+            } else if (vocation === "rookstayer") {
+                voc_constant = 1.7;
+            } else if (vocation === "elite") {
+                voc_constant = 1.6;
             }
 
-            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
             for (let level = currentSkill + 1; level <= targetSkill; level++) {
-                //Points required to advance to next skill level:
-                const hitsForLevel = Math.floor(25 * Math.pow(voc_constant, level - 11));  // Obliczanie uderzeń dla danego poziomu
-                // 25 to 50 przy rate x 1-- skill contstant
+                const hitsForLevel = Math.floor(25 * Math.pow(voc_constant, level - 11));
                 if (percentToNext < 100) {
-                    totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
-                    percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
+                    totalHits += ((hitsForLevel / 100) * percentToNext);
+                    percentToNext = 100;
                 } else {
-                    totalHits += hitsForLevel;  // Dodanie do całkowitej liczby uderzeń
+                    totalHits += hitsForLevel;
                 }
             }
 
-            // Czas na wykonanie wszystkich uderzeń (2 sekundy na jedno uderzenie)
-            
-            totalHits = Math.ceil(totalHits);  // Zaokrąglenie do pełnej liczby uderzeń
+            totalHits = Math.ceil(totalHits);
             const totalSeconds = totalHits * 2;
 
-            // Przeliczenie na dni, godziny, minuty i sekundy
             const days = Math.floor(totalSeconds / 86400);
             const hours = Math.floor((totalSeconds % 86400) / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = Math.floor(totalSeconds % 60);  // Zaokrąglenie do pełnej sekundy
+            const seconds = Math.floor(totalSeconds % 60);
 
-            // Wyświetlanie wyniku z czasem
             const resultDiv = document.getElementById("trainingResultMelee");
             resultDiv.innerHTML = `
                 <div>Potrzebne uderzenia: ${totalHits}.</div>
                 <div style="color: red;">Czas: ${days} dni ${hours} godz. ${minutes} minut ${seconds} sekund.</div>`;
         }
-
 
         function calculateTrainingMagic() {
             const currentSkill = parseInt(document.getElementById("currentSkillMagic").value);
@@ -330,21 +325,19 @@
             }
 
             let totalMana = 0;
-            let manaForLevel;
             let voc_constant = 0;
             const vocation = document.getElementById('vocationMagic').value;
 
             if (vocation === "none") {
-                voc_constant = 4.0;  // Wartość dla "none"
-            } else {
-                voc_constant = 2.7;  // Wartość dla rookstayer
+                voc_constant = 4.0;
+            } else if (vocation === "rookstayer") {
+                voc_constant = 2.7;
+            } else if (vocation === "elite") {
+                voc_constant = 2.5;
             }
 
-            // Obliczanie many potrzebnej do osiągnięcia docelowego poziomu
             for (let level = currentSkill + 1; level <= targetSkill; level++) {
-                // Mana required to advance to next magic level
-                manaForLevel = Math.floor(1600 * Math.pow(voc_constant, level - 1));
-
+                const manaForLevel = Math.floor(1600 * Math.pow(voc_constant, level - 1));
                 if (percentToNext < 100) {
                     totalMana += (manaForLevel / 100) * percentToNext;
                     percentToNext = 100;
@@ -353,7 +346,6 @@
                 }
             }
 
-            // Wyświetlanie wyniku
             const visibleMana = Math.ceil(totalMana / 1.5);
 
             const spell1Cost = 40; // Exura gran
@@ -374,7 +366,6 @@
             </ul>`;
         }
 
-
         function calculateTrainingDist() {
             const currentSkill = parseInt(document.getElementById("currentSkillDist").value);
             var percentToNext = parseInt(document.getElementById("percentToNextDist").value);
@@ -389,49 +380,41 @@
             }
 
             let totalHits = 0;
-            let hitsForLevel;
             let voc_constant = 0;
             const vocation = document.getElementById('vocationDist').value;
             if (vocation === "none") {
-                voc_constant = 1.9;  // Wartość dla none
-            } else {
-                voc_constant = 1.6;  // Wartość dla rookstayer
+                voc_constant = 1.9;
+            } else if (vocation === "rookstayer") {
+                voc_constant = 1.7;
+            } else if (vocation === "elite") {
+                voc_constant = 1.6;
             }
 
-            // Obliczanie uderzeń potrzebnych do osiągnięcia docelowego poziomu
             for (let level = currentSkill + 1; level <= targetSkill; level++) {
-                //Points required to advance to next skill level:
-                const hitsForLevel = 7.5 * Math.pow(voc_constant, level - 11);  // Obliczanie uderzeń dla danego poziomu
-                // 15 to 30 przy rate x 1-- skill contstant
+                const hitsForLevel = 7.5 * Math.pow(voc_constant, level - 11);
                 if (percentToNext < 100) {
-                    totalHits += ((hitsForLevel / 100) * percentToNext);  // Dodanie do całkowitej liczby uderzeń
-                    percentToNext = 100;  // Przejście do pełnych uderzeń na kolejnym poziomie
+                    totalHits += ((hitsForLevel / 100) * percentToNext);
+                    percentToNext = 100;
                 } else {
-                    totalHits += hitsForLevel;  // Dodanie do całkowitej liczby uderzeń
+                    totalHits += hitsForLevel;
                 }
             }
 
-            totalHits = Math.ceil(totalHits);  // Zaokrąglenie do pełnej liczby uderzeń
-            // Czas na wykonanie wszystkich uderzeń (2 sekundy na jedno uderzenie)
+            totalHits = Math.ceil(totalHits);
             const totalSeconds = totalHits * 2;
 
-            // Przeliczenie na dni, godziny, minuty i sekundy
             const days = Math.floor(totalSeconds / 86400);
             const hours = Math.floor((totalSeconds % 86400) / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = Math.floor(totalSeconds % 60);  // Zaokrąglone w dół do pełnej sekundy
+            const seconds = Math.floor(totalSeconds % 60);
 
-            // Wyświetlanie wyniku z czasem
             const resultDiv = document.getElementById("trainingResultDist");
             resultDiv.innerHTML = `
                 <div>Potrzebne uderzenia: ${totalHits}.</div>
                 <div style="color: red;">
                     Czas: ${days} dni ${hours} godz. ${minutes} minut ${seconds} sekund.
                 </div>`;
-
         }
-
-
     </script>
 </body>
 
