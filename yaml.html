@@ -6,28 +6,46 @@
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     textarea { width: 100%; height: 200px; margin-bottom: 20px; }
-    pre { background: #f4f4f4; padding: 10px; }
+    pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; }
+    input { width: 80px; margin-right: 10px; }
   </style>
 </head>
 <body>
   <h1>Konwerter HTML → YAML (pozycje mapy)</h1>
   <p>Wklej HTML z linkami poniżej:</p>
   <textarea id="inputHtml" placeholder="Wklej HTML..."></textarea>
+
+  <div style="margin-bottom: 10px;">
+    <label>Zakres: </label>
+    <input type="number" id="startIndex" value="600" min="0"> do
+    <input type="number" id="endIndex" value="650" min="0">
+  </div>
+
   <button onclick="convert()">Konwertuj</button>
+
   <h2>Wynik YAML:</h2>
   <pre id="outputYaml"></pre>
 
   <script>
     function convert() {
-      const html = document.getElementById('inputHtml').value;
+      const html = document.getElementById('inputHtml').value.trim();
+      const startIndex = parseInt(document.getElementById('startIndex').value);
+      const endIndex = parseInt(document.getElementById('endIndex').value);
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
       const links = doc.querySelectorAll('a[href*="position"]');
 
+      if (isNaN(startIndex) || isNaN(endIndex) || startIndex > endIndex) {
+        alert("Podaj poprawny zakres (od mniejszej do większej liczby).");
+        return;
+      }
+
       let yaml = '';
-      let index = 600;
+      let index = startIndex;
+      let count = 0;
 
       links.forEach(link => {
+        if (index > endIndex) return; // zatrzymaj, jeśli przekroczony zakres
         const href = link.getAttribute('href');
         const match = href.match(/position,(\d+),(\d+),(\d+)/);
 
@@ -41,9 +59,11 @@
           yaml += `    z: ${z}\n`;
           yaml += `  description: ${link.textContent.trim()}\n`;
           index++;
+          count++;
         }
       });
 
+      if (count === 0) yaml = "Nie znaleziono żadnych linków z pozycjami.";
       document.getElementById('outputYaml').textContent = yaml;
     }
   </script>
