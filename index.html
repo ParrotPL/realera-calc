@@ -6,6 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulatory</title>
     <style>
+        .download-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #4CAF50, #3e8e41);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #45a049, #357a38);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-wrapper {
+            text-align: center;
+            /* wyśrodkowanie wszystkich elementów w środku */
+        }
+
+
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -217,7 +251,7 @@
                 <ol>
                     <li>
                         Zaloguj się na swoją postać, utwórz nowy znacznik o nazwie
-                        <code>bigos_rocks</code> na minimapie i  <strong style="color:red;">zamknij klienta gry.</strong>
+                        <code>bigos_rocks</code> na minimapie i <strong style="color:red;">zamknij klienta gry.</strong>
                         <div class="image-wrapper">
                             <img src="./bigos_map.jpg" alt="Minimapa z oznaczonym bigos_rocks" class="help-image">
                         </div>
@@ -245,17 +279,20 @@
                 <input type="file" id="otmlFile" accept=".otml">
                 <button class="calculate" id="processBtn">⚙️ Przetwórz plik</button>
 
-                <div id="status" class="result"></div>
+                <div class="download-wrapper">
+                    <div id="status" class="result"></div>
+                    <a id="downloadLink" style="display:none;" class="download-btn" href="#" download>
+                        📥 Pobierz zmodyfikowany plik
+                    </a>
+                </div>
 
-                <a id="downloadLink" style="display:none;" class="calculate" href="#" download>
-                    📥 Pobierz zmodyfikowany plik
-                </a>
+
             </div>
 
 
             <script>
                 async function fetchMapRocks() {
-                    const response = await fetch('https://parrotpl.github.io/realera-calc/map%20rocks%20marker/map_rocks.yaml');
+                    const response = await fetch('./map_rocks.yaml');
                     if (!response.ok) throw new Error('Nie udało się pobrać pliku map_rocks.yaml');
                     return await response.text();
                 }
@@ -292,7 +329,7 @@
                     const url = URL.createObjectURL(blob);
 
                     downloadLink.href = url;
-                    downloadLink.download = file.name; 
+                    downloadLink.download = file.name;
                     downloadLink.style.display = 'inline-block';
                     status.textContent = 'Gotowe! Pobierz zmodyfikowany plik.';
                     document.getElementById('processBtn').disabled = false;
