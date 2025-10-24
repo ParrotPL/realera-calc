@@ -292,7 +292,7 @@
                     const url = URL.createObjectURL(blob);
 
                     downloadLink.href = url;
-                    downloadLink.download = originalName.replace(/\.otml$/i, '_edited.otml');
+                    downloadLink.download = file.name; 
                     downloadLink.style.display = 'inline-block';
                     status.textContent = 'Gotowe! Pobierz zmodyfikowany plik.';
                     document.getElementById('processBtn').disabled = false;
